@@ -106,7 +106,7 @@ function saveBookmark(bookmarkURL,callback){
 
 function db(callback){
 	mongoose.connect(uristring, function (err, res) {
-		callback(callback);
+		callback(callback(err,res));
 	});
 }
 
