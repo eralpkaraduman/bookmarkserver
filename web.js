@@ -72,7 +72,7 @@ app.get('/bookmarks',function(req,res){
 
 
 function saveBookmark(bookmarkURL,callback){
-	var e = true //encrypt?
+	var e = false //encrypt?
 
 	if(validator.isURL(bookmarkURL)){
 		
