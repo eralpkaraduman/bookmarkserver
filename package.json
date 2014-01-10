@@ -9,5 +9,8 @@
   "repository": "",
   "author": "",
   "license": "BSD",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "mongoose": "~3.8.4"
+  }
 }
