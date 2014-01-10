@@ -79,7 +79,7 @@ function saveBookmark(bookmarkURL,callback){
 		db(function(err, res) {
 		  if (err) {
 		  	console.log(err);
-		  	callback('db:'+err,null);
+		  	callback('db1:'+err,null);
 		  } else {
 
 		  	var bookmark = new Bookmark({
@@ -90,7 +90,7 @@ function saveBookmark(bookmarkURL,callback){
 		  	bookmark.save(function(err){
 		  		if(err){
 		  			console.log(err);
-		  			callback('db'+err,null);
+		  			callback('db2'+err,null);
 		  		}else{
 		  			callback(null,null);
 		  		}
