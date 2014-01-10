@@ -61,6 +61,8 @@ app.post('/bookmark',function(req,res){
 
 
 function saveBookmark(bookmarkURL,callback){
+	var e = true //encrypt?
+
 	if(validator.isURL(bookmarkURL)){
 		
 		mongoose.connect(uristring, function (err, res) {
@@ -71,7 +73,7 @@ function saveBookmark(bookmarkURL,callback){
 
 		  	var bookmark = new Bookmark({
 		  		encrypted:'true',
-		  		bookmarkURL:bookmarkURL
+		  		bookmarkURL:e?enc(bookmarkURL):bookmarkURL
 		  	});
 
 		  	bookmark.save(function(err){
