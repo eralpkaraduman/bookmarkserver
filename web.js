@@ -13,12 +13,23 @@ var decipher = crypto.createDecipher(algorithm, key);
 
 var url = require('url');
 
-// Here we find an appropriate database to connect to, defaulting to
-// localhost if we don't find one.
+
+
+
 var uristring =
 process.env.MONGOLAB_URI ||
 process.env.MONGOHQ_URL ||
 'mongodb://localhost/HelloMongoose';
+
+var bookmarkSchema = new mongoose.Schema({
+	encrypted:String,
+	bookmarkURL:String,
+	videoURL:String,
+	imageURL:String,
+	thumbnailURL:String
+});
+
+var Bookmark = mongoose.model('Bookmarks', bookmarkSchema);
 
 // The http server will listen to an appropriate port, or default to
 // port 5000.
@@ -57,7 +68,20 @@ function saveBookmark(bookmarkURL,callback){
 		  	console.log(err);
 		  	callback('db:'+err,null);
 		  } else {
-		  	callback(null,"db-connect-ok");
+
+		  	var bookmark = new Bookmark({
+		  		encrypted:'true',
+		  		bookmarkURL:bookmarkURL
+		  	});
+
+		  	bookmark.save(function(err){
+		  		if(err){
+		  			callback('db'+err,null);
+		  		}else{
+		  			callback(null,null);
+		  		}
+		  	});
+
 		  }
 		});
 
