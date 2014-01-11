@@ -79,16 +79,18 @@ app.get('/bookmarks',function(req,res){
 					response.result = true;
 					response.bookmarks = [];
 				}
+				res.end(JSON.stringify(response,null, 4));
 		});
 
 	  }else{
 
 		response.result = false;
 	  	response.error = err+"";
+	  	res.end(JSON.stringify(response,null, 4));
 	  }
 
 	  
-	  res.end(JSON.stringify(response,null, 4));
+	  
 
 	});
 
