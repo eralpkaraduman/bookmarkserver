@@ -59,14 +59,23 @@ app.post('/bookmark',function(req,res){
 });
 
 app.get('/bookmarks',function(req,res){
-	//res.send('sig');
+	
 
-	Bookmark.find({}).exec(function(err,result){
-		console.log('err',err);
-		console.log('result',result);
+	db(function(err, res) {
+	  if (!err) {
 
-		res.send({e:err,r:result});
+		Bookmark.find({}).exec(function(err,result){
+			console.log('err',err);
+			console.log('result',result);
+
+			res.send({e:err,r:result});
+		});
+
+	  }
 	});
+
+
+	
 })
 
 
@@ -76,11 +85,7 @@ function saveBookmark(bookmarkURL,callback){
 	if(validator.isURL(bookmarkURL)){
 		
 		db(function(err, res) {
-		  if (err) {
-		  	console.log(err);
-		  	callback('db1:'+err,null);
-		  } else {
-
+		  if (!err) {
 		  	var bookmark = new Bookmark({
 		  		encrypted:'true',
 		  		bookmarkURL:e?enc(bookmarkURL):bookmarkURL
@@ -104,8 +109,17 @@ function saveBookmark(bookmarkURL,callback){
 }
 
 function db(callback){
+	
 	mongoose.connect(uristring, function (err, res) {
-		callback(callback(err,res));
+
+		if(err){
+			err = 'db1:'+err;
+			console.log(err);
+		  	callback(err,null);
+		}else{
+			callback(callback(err,res));	
+		}
+		
 	});
 }
 
