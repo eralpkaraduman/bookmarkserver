@@ -8,8 +8,7 @@ app.use(express.bodyParser());
 
 var algorithm = 'aes256';
 var key = 'yylnexxar';
-var cipher = crypto.createCipher(algorithm, key);
-var decipher = crypto.createDecipher(algorithm, key);
+
 
 var url = require('url');
 
@@ -111,10 +110,12 @@ function db(callback){
 }
 
 function enc(str){
+	var cipher = crypto.createCipher(algorithm, key);
 	return cipher.update(str, 'utf8', 'hex') + cipher.final('hex');
 }
 
 function dec(str){
+	var decipher = crypto.createDecipher(algorithm, key);
 	return decipher.update(str, 'hex', 'utf8') + decipher.final('utf8');
 }
 
