@@ -87,7 +87,16 @@ app.get('/bookmarks',function(req,res){
 						response.bookmarks = [];
 
 						result.forEach(function(b) {
-						    response.bookmarks.push('sig');
+						    var _b = {};
+						    var e = (b.encrypted == "true");
+						    
+						    _b = {
+						    	encrypted:e,
+						    	bookmarkURL:e?dec(b.title):b.title,
+						    	bookmarkURL:e?dec(b.bookmarkURL):b.bookmarkURL
+						    }
+
+						    response.bookmarks.push(_b);
 						});
 
 						
