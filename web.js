@@ -55,23 +55,41 @@ app.post('/bookmark',function(req,res){
 		}else{
 			res.send('ok'+(result?":"+result:""));
 		}
+
+		
+
 	});
 });
 
 app.get('/bookmarks',function(req,res){
 	
+	res.writeHead(200, { 'Content-Type': 'application/json'});
 
-	db(function(err, res) {
-	  if (!err) {
+	db(false,function(err, db_res) {
+	  
+		var response = {};
 
-		Bookmark.find({}).exec(function(err,result){
-			console.log('err',err);
-			console.log('result',result);
-
-			res.send({e:err,r:result});
+		if (!err) {
+			Bookmark.find({}).exec(function(err,result){
+			
+				if(err){
+					response.result = false;
+					response.error = err+"";
+				}else{
+					response.result = true;
+					response.bookmarks = [];
+				}
 		});
 
+	  }else{
+
+		response.result = false;
+	  	response.error = err+"";
 	  }
+
+	  
+	  res.end(JSON.stringify(response,null, 4));
+
 	});
 
 
@@ -84,7 +102,7 @@ function saveBookmark(bookmarkURL,callback){
 
 	if(validator.isURL(bookmarkURL)){
 		
-		db(function(err, res) {
+		db(true,function(err, res) {
 		  if (!err) {
 		  	var bookmark = new Bookmark({
 		  		encrypted:'true',
@@ -108,11 +126,11 @@ function saveBookmark(bookmarkURL,callback){
 	}
 }
 
-function db(callback){
+function db(catchError,callback){
 	
 	mongoose.connect(uristring, function (err, res) {
 
-		if(err){
+		if(err && catchError==true){
 			err = 'db1:'+err;
 			console.log(err);
 		  	callback(err,null);
