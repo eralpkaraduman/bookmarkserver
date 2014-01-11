@@ -1,4 +1,5 @@
 var http = require ('http'); 
+var UglifyJS = require("uglify-js");
 var mongoose = require('mongoose');
 var _db;
 var express = require('express');
@@ -40,11 +41,11 @@ var Bookmark = mongoose.model('Bookmarks', bookmarkSchema);
 // port 5000.
 var port = process.env.PORT || 5000;
 
-app.post('/bookmark',function(req,res){
+app.post('/bookmarks/add',function(req,res){
 	res.header('Access-Control-Allow-Origin', '*')
 
 	saveBookmark(req.body.bookmarkURL,req.body.title,function(err,result){
-		if(err){gthfr
+		if(err){
 			res.send('error:'+err);
 		}else{
 			res.send('ok'+(result?":"+result:""));
@@ -55,7 +56,7 @@ app.post('/bookmark',function(req,res){
 
 app.get('/bookmarks/delete/:bookmarkID',function(req,res){
 
-	res.writeHead(200, { 'Content-Type': 'application/json'});
+	res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8'});
 	var response = {result:false,id:req.params.bookmarkID};
 
 	if(_db.readyState){
@@ -79,7 +80,7 @@ app.get('/bookmarks',function(req,res){
 	
 	var fullURL = req.protocol + "://" + req.get('host');
 
-	res.writeHead(200, { 'Content-Type': 'application/json'});
+	res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8'});
 
 		var response = {};
 
@@ -126,6 +127,37 @@ app.get('/bookmarks',function(req,res){
 
 })
 
+app.get('/bookmarklet',function(req,res){
+	
+	res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8'});
+
+	var fullURL = req.protocol + "://" + req.get('host');
+
+	var script = "(function(){ \
+					var data = new FormData(); \
+					data.append('bookmarkURL', window.location.href); \
+					data.append('title', document.title); \
+					var xhr = new XMLHttpRequest(); \
+					xhr.open('POST', '"+fullURL+"/bookmarks/add', true); \
+					xhr.onload = function () { \
+					    alert(this.response); \
+					}; \
+					xhr.send(data); \
+				})();";
+
+	script = "javascript:"+UglifyJS.minify(script, {fromString: true}).code;
+	
+	
+	var html = "<html><body> \
+		<a href='"+script+"'>bookmark</a> \
+		<br /> \
+		<pre><textarea width='200px' rows='5' cols='50' readonly>"+script+"</textarea></pre>\
+	</body></html>";
+
+	res.end(html);
+
+});
+
 
 function saveBookmark(bookmarkURL,title,callback){
 	var e = true; //encrypt?
@@ -152,8 +184,6 @@ function saveBookmark(bookmarkURL,title,callback){
 			callback('db not connected',null);
 		}
 
-		  //}
-		//});
 
 	}else{
 		callback('invalid url',null);
@@ -170,5 +200,6 @@ function dec(str){
 	var decipher = crypto.createDecipher(algorithm, key);
 	return decipher.update(str, 'hex', 'utf8') + decipher.final('utf8');
 }
+
 
 app.listen(port);
