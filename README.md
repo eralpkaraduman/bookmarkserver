@@ -25,7 +25,7 @@ Returns bookmarks as json
 GET /bookmarks/delete/:bookmarkID
 ---------------------------------
 
-Replace bookmarkID to delete a bookmark
+Replace ":bookmarkID" to delete a bookmark
 
 Encryption
 ----------
