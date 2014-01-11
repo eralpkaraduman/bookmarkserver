@@ -168,7 +168,8 @@ app.get('/bookmarklet',function(req,res){
 
 
 function saveBookmark(bookmarkURL,title,callback){
-	var e = true; //encrypt?
+	// TURN ON/OFF ENCRYPTION FROM HERE
+	var e = true; 
 
 	if(validator.isURL(bookmarkURL)){
 		
