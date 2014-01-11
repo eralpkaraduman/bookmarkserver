@@ -54,6 +54,7 @@ app.post('/bookmark',function(req,res){
 });
 
 app.get('/bookmarks/delete/:bookmarkID',function(req,res){
+
 	res.writeHead(200, { 'Content-Type': 'application/json'});
 	var response = {result:false,id:req.params.bookmarkID};
 
@@ -76,6 +77,8 @@ app.get('/bookmarks/delete/:bookmarkID',function(req,res){
 
 app.get('/bookmarks',function(req,res){
 	
+	var fullURL = req.protocol + "://" + req.get('host');
+
 	res.writeHead(200, { 'Content-Type': 'application/json'});
 
 		var response = {};
@@ -97,12 +100,14 @@ app.get('/bookmarks',function(req,res){
 						    var _b = {};
 						    var e = (b.encrypted == "true");
 						    
+
+
 						    _b = {
 						    	encrypted:e,
 						    	bookmarkURL:e?dec(b.title):b.title,
 						    	title:e?dec(b.bookmarkURL):b.bookmarkURL,
 						    	id:b._id,
-						    	deleteURL:"/bookmarks/delete/"+b._id
+								deleteURL:fullURL+"/bookmarks/delete/"+b._id
 						    }
 
 						    response.bookmarks.push(_b);
