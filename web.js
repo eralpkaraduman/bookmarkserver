@@ -1,19 +1,26 @@
 var http = require ('http'); 
 var UglifyJS = require("uglify-js");
 var mongoose = require('mongoose');
-var _db;
 var express = require('express');
 var validator = require('validator');
 var crypto = require('crypto');
 var app = express();
 app.use(express.bodyParser());
 
+
+var _db;
 var algorithm = 'aes256';
-var key = process.env.ENCRYPTION_KEY || require('./key') || "encryptionKey";
+
+// storing your key
+// 1) set an environment variable on heroku.
+// 2) create key.js with "module.exports = "yourEncryptionKey";" in it.
+// 3) don't hide it just replace line below with var key="yourEncryptionKey".
+var key = process.env.ENCRYPTION_KEY || require('./key') || "yourEncryptionKey";
 console.log('using encryptionKey : '+key);
 
 var url = require('url');
 
+// you need an mongolab account.
 var uristring =
 process.env.MONGOLAB_URI ||
 process.env.MONGOHQ_URL ||
