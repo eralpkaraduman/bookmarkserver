@@ -93,7 +93,7 @@ app.get('/bookmarks',function(req,res){
 						    _b = {
 						    	encrypted:e,
 						    	bookmarkURL:e?dec(b.title):b.title,
-						    	bookmarkURL:e?dec(b.bookmarkURL):b.bookmarkURL
+						    	title:e?dec(b.bookmarkURL):b.bookmarkURL
 						    }
 
 						    response.bookmarks.push(_b);
