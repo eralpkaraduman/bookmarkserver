@@ -63,7 +63,7 @@ app.get('/bookmarks/delete/:bookmarkID',function(req,res){
 				response.result = true;
 		    }
 		    else {
-				response.error = error;
+				response.error = err;
 		    }
 		    res.end(JSON.stringify(response,null, 4));
 		});
