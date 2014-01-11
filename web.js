@@ -58,7 +58,7 @@ app.get('/bookmarks/delete/:bookmarkID',function(req,res){
 	var response = {result:false,id:req.params.bookmarkID};
 
 	if(_db.readyState){
-		Bookmark.remove({ _id: bookmarkID }, function(err) {
+		Bookmark.remove({ _id: response.id }, function(err) {
 		    if (!err) {
 				response.result = true;
 		    }
