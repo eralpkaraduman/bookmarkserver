@@ -9,7 +9,7 @@ var app = express();
 app.use(express.bodyParser());
 
 var algorithm = 'aes256';
-var key = process.env.encryptionKey || require('./key') || "encryptionKey";
+var key = process.env.ENCRYPTION_KEY || require('./key') || "encryptionKey";
 console.log('using encryptionKey : '+key);
 
 var url = require('url');
