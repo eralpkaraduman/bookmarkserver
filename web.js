@@ -26,6 +26,7 @@ _db.once('open', function callback () {
 });
 
 var bookmarkSchema = new mongoose.Schema({
+	title:String,
 	encrypted:String,
 	bookmarkURL:String,
 	videoURL:String,
@@ -54,7 +55,7 @@ mongoose.connect(uristring, function (err, res) {
 app.post('/bookmark',function(req,res){
 	res.header('Access-Control-Allow-Origin', '*')
 
-	saveBookmark(req.body.bookmarkURL,function(err,result){
+	saveBookmark(req.body.bookmarkURL,req.body.title,function(err,result){
 		if(err){gthfr
 			res.send('error:'+err);
 		}else{
@@ -82,8 +83,14 @@ app.get('/bookmarks',function(req,res){
 						response.error = err+"";
 					}else{
 						response.result = true;
+						
 						response.bookmarks = [];
-						response.r = result;
+
+						result.forEach(function(b) {
+						    response.bookmarks.push('sig');
+						});
+
+						
 					}
 					res.end(JSON.stringify(response,null, 4));
 			});
@@ -110,7 +117,7 @@ app.get('/bookmarks',function(req,res){
 })
 
 
-function saveBookmark(bookmarkURL,callback){
+function saveBookmark(bookmarkURL,title,callback){
 	var e = true; //encrypt?
 
 	if(validator.isURL(bookmarkURL)){
@@ -121,6 +128,7 @@ function saveBookmark(bookmarkURL,callback){
 		if(_db.readyState){  	
 			var bookmark = new Bookmark({
 				encrypted:'true',
+				title:e?enc(title):title,
 				bookmarkURL:e?enc(bookmarkURL):bookmarkURL
 			});
 
