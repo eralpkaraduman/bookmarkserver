@@ -53,6 +53,27 @@ app.post('/bookmark',function(req,res){
 	});
 });
 
+app.get('/bookmarks/delete/:bookmarkID',function(req,res){
+	res.writeHead(200, { 'Content-Type': 'application/json'});
+	var response = {result:false,id:req.params.bookmarkID};
+
+	if(_db.readyState){
+		Bookmark.remove({ _id: bookmarkID }, function(err) {
+		    if (!err) {
+				response.result = true;
+		    }
+		    else {
+				response.error = error;
+		    }
+		    res.end(JSON.stringify(response,null, 4));
+		});
+	}else{
+		response.error = 'db not connected';
+		res.end(JSON.stringify(response,null, 4));
+	}
+	
+});
+
 app.get('/bookmarks',function(req,res){
 	
 	res.writeHead(200, { 'Content-Type': 'application/json'});
@@ -71,19 +92,17 @@ app.get('/bookmarks',function(req,res){
 						
 						response.bookmarks = [];
 
-
-
 						result.forEach(function(b) {
 
-							console.log(b);
-							
 						    var _b = {};
 						    var e = (b.encrypted == "true");
 						    
 						    _b = {
 						    	encrypted:e,
 						    	bookmarkURL:e?dec(b.title):b.title,
-						    	title:e?dec(b.bookmarkURL):b.bookmarkURL
+						    	title:e?dec(b.bookmarkURL):b.bookmarkURL,
+						    	id:b._id,
+						    	deleteURL:"/bookmarks/delete/"+b._id
 						    }
 
 						    response.bookmarks.push(_b);
