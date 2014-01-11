@@ -55,13 +55,11 @@ app.post('/bookmark',function(req,res){
 	res.header('Access-Control-Allow-Origin', '*')
 
 	saveBookmark(req.body.bookmarkURL,function(err,result){
-		if(err){
+		if(err){gthfr
 			res.send('error:'+err);
 		}else{
 			res.send('ok'+(result?":"+result:""));
 		}
-
-		
 
 	});
 });
@@ -85,6 +83,7 @@ app.get('/bookmarks',function(req,res){
 					}else{
 						response.result = true;
 						response.bookmarks = [];
+						response.r = result;
 					}
 					res.end(JSON.stringify(response,null, 4));
 			});
