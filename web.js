@@ -1,5 +1,5 @@
 var http = require ('http'); 
-var mongoose = require('mongoose'); // The reason for this demo.
+var mongoose = require('mongoose');
 var _db;
 var express = require('express');
 var validator = require('validator');
@@ -40,18 +40,6 @@ var Bookmark = mongoose.model('Bookmarks', bookmarkSchema);
 // port 5000.
 var port = process.env.PORT || 5000;
 
-// Makes connection asynchronously.  Mongoose will queue up database
-// operations and release them when the connection is complete.
-/*
-mongoose.connect(uristring, function (err, res) {
-  if (err) {
-  console.log ('ERROR connecting to: ' + uristring + '. ' + err);
-  } else {
-  console.log ('Succeeded connected to: ' + uristring);
-  }
-});
-*/
-
 app.post('/bookmark',function(req,res){
 	res.header('Access-Control-Allow-Origin', '*')
 
@@ -69,13 +57,10 @@ app.get('/bookmarks',function(req,res){
 	
 	res.writeHead(200, { 'Content-Type': 'application/json'});
 
-	//db(false,function(err, db_res) {
-	  
 		var response = {};
 
 		if(_db.readyState){
 
-			//if (!err) {
 			Bookmark.find({}).exec(function(err,result){
 				
 					if(err){
@@ -86,6 +71,8 @@ app.get('/bookmarks',function(req,res){
 						
 						response.bookmarks = [];
 
+
+						console.log(b);
 						result.forEach(function(b) {
 						    var _b = {};
 						    var e = (b.encrypted == "true");
@@ -110,19 +97,6 @@ app.get('/bookmarks',function(req,res){
 	  		res.end(JSON.stringify(response,null, 4));
 		}
 
-	/*
-	  }else{
-
-		
-	  }
-	*/
-	  
-	  
-
-	//});
-
-
-	
 })
 
 
@@ -131,8 +105,6 @@ function saveBookmark(bookmarkURL,title,callback){
 
 	if(validator.isURL(bookmarkURL)){
 		
-		//db(true,function(err, res) {
-		  //if (!err) {
 
 		if(_db.readyState){  	
 			var bookmark = new Bookmark({
@@ -161,34 +133,6 @@ function saveBookmark(bookmarkURL,title,callback){
 	}
 }
 
-/*
-function db(catchError,callback){
-	
-	if(_db==null){
-		mongoose.connect(uristring, function (err, res) {
-
-			if(err && catchError==true){
-				err = 'db1:'+err;
-				console.log(err);
-			  	callback(err,null);
-			}else{
-				callback(callback(err,res));	
-			}
-			
-		});
-		_db = mongoose.connection;
-		_db.on('error', console.error.bind(console, 'connection error:'));
-		_db.once('open', function callback () {
-		  console.log('console opened');
-		});
-
-	}else{
-		callback(null,res)
-	}
-	
-	
-}
-*/
 
 function enc(str){
 	var cipher = crypto.createCipher(algorithm, key);
