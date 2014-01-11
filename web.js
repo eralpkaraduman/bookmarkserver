@@ -151,7 +151,7 @@ app.get('/bookmarklet',function(req,res){
 	var html = "<html><body> \
 		<a href='"+script+"'>bookmark</a> \
 		<br /> \
-		<pre><textarea width='200px' rows='5' cols='50' readonly>"+script+"</textarea></pre>\
+		<pre><textarea width='200px' rows='5' cols='50' >"+script+"</textarea></pre>\
 	</body></html>";
 
 	res.end(html);
