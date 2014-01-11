@@ -2,6 +2,7 @@ Bookmark Server
 ===============
 
 Very simple node.js bookmark server with REST-ish api.
+Stores bookmarks on mongodb,
 You can run this on heroku with mongolab addon.
 
 /bookmarklet
@@ -31,9 +32,9 @@ Encryption
 
 Server has encryption feature which is default ON
 You have to provide an encryption key with one of these methods;
-1) set an environment variable ENCRYPTION_KEY on heroku/your server).
-2) create key.js file with "module.exports = 'yourEncryptionKey';" in it.
-3) don't hide it
+1. set an environment variable ENCRYPTION_KEY on heroku/your server).
+2. create key.js file with "module.exports = 'yourEncryptionKey';" in it.
+3. don't hide it
  just replace "var key = .." line with "var key = 'yourEncryptionKey'"
 
 If you want to turn encryption off
