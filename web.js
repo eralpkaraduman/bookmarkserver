@@ -1,5 +1,6 @@
-var http = require ('http');             // For serving a basic web page.
-var mongoose = require ("mongoose"); // The reason for this demo.
+var http = require ('http'); 
+var mongoose = require('mongoose'); // The reason for this demo.
+var _db;
 var express = require('express');
 var validator = require('validator');
 var crypto = require('crypto');
@@ -9,16 +10,20 @@ app.use(express.bodyParser());
 var algorithm = 'aes256';
 var key = 'yylnexxar';
 
-
 var url = require('url');
-
-
-
 
 var uristring =
 process.env.MONGOLAB_URI ||
 process.env.MONGOHQ_URL ||
 'mongodb://localhost/HelloMongoose';
+
+mongoose.connect(uristring);
+_db = mongoose.connection;
+_db.on('error', console.error.bind(console, 'connection error:'));
+_db.once('open', function callback () {
+	console.log('db connection opened');
+
+});
 
 var bookmarkSchema = new mongoose.Schema({
 	encrypted:String,
@@ -65,34 +70,41 @@ app.get('/bookmarks',function(req,res){
 	
 	res.writeHead(200, { 'Content-Type': 'application/json'});
 
-	db(false,function(err, db_res) {
+	//db(false,function(err, db_res) {
 	  
 		var response = {};
 
-		if (!err) {
-			Bookmark.find({}).exec(function(err,result){
-			
-				if(err){
-					response.result = false;
-					response.error = err+"";
-				}else{
-					response.result = true;
-					response.bookmarks = [];
-				}
-				res.end(JSON.stringify(response,null, 4));
-		});
+		if(_db.readyState){
 
+			//if (!err) {
+			Bookmark.find({}).exec(function(err,result){
+				
+					if(err){
+						response.result = false;
+						response.error = err+"";
+					}else{
+						response.result = true;
+						response.bookmarks = [];
+					}
+					res.end(JSON.stringify(response,null, 4));
+			});
+
+		}else{
+			response.result = false;
+	  		response.error = "db not connected";
+	  		res.end(JSON.stringify(response,null, 4));
+		}
+
+	/*
 	  }else{
 
-		response.result = false;
-	  	response.error = err+"";
-	  	res.end(JSON.stringify(response,null, 4));
+		
 	  }
-
+	*/
 	  
 	  
 
-	});
+	//});
 
 
 	
@@ -104,44 +116,63 @@ function saveBookmark(bookmarkURL,callback){
 
 	if(validator.isURL(bookmarkURL)){
 		
-		db(true,function(err, res) {
-		  if (!err) {
-		  	var bookmark = new Bookmark({
-		  		encrypted:'true',
-		  		bookmarkURL:e?enc(bookmarkURL):bookmarkURL
-		  	});
+		//db(true,function(err, res) {
+		  //if (!err) {
 
-		  	bookmark.save(function(err){
-		  		if(err){
-		  			console.log(err);
-		  			callback('db2'+err,null);
-		  		}else{
-		  			callback(null,null);
-		  		}
-		  	});
+		if(_db.readyState){  	
+			var bookmark = new Bookmark({
+				encrypted:'true',
+				bookmarkURL:e?enc(bookmarkURL):bookmarkURL
+			});
 
-		  }
-		});
+			bookmark.save(function(err){
+				if(err){
+					console.log(err);
+					callback('db2'+err,null);
+				}else{
+					callback(null,null);
+				}
+			});
+		}else{
+			callback('db not connected',null);
+		}
+
+		  //}
+		//});
 
 	}else{
 		callback('invalid url',null);
 	}
 }
 
+/*
 function db(catchError,callback){
 	
-	mongoose.connect(uristring, function (err, res) {
+	if(_db==null){
+		mongoose.connect(uristring, function (err, res) {
 
-		if(err && catchError==true){
-			err = 'db1:'+err;
-			console.log(err);
-		  	callback(err,null);
-		}else{
-			callback(callback(err,res));	
-		}
-		
-	});
+			if(err && catchError==true){
+				err = 'db1:'+err;
+				console.log(err);
+			  	callback(err,null);
+			}else{
+				callback(callback(err,res));	
+			}
+			
+		});
+		_db = mongoose.connection;
+		_db.on('error', console.error.bind(console, 'connection error:'));
+		_db.once('open', function callback () {
+		  console.log('console opened');
+		});
+
+	}else{
+		callback(null,res)
+	}
+	
+	
 }
+*/
 
 function enc(str){
 	var cipher = crypto.createCipher(algorithm, key);
