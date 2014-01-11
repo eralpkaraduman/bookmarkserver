@@ -72,8 +72,11 @@ app.get('/bookmarks',function(req,res){
 						response.bookmarks = [];
 
 
-						console.log(b);
+
 						result.forEach(function(b) {
+
+							console.log(b);
+							
 						    var _b = {};
 						    var e = (b.encrypted == "true");
 						    
