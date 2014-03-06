@@ -20,8 +20,9 @@ console.log('using encryptionKey : '+key);
 
 var url = require('url');
 
-// you need an mongolab account.
-var uristring = require('mongodb_uri');
+// you need a mongodb uri create a file named mongodb_uri.js with
+// module.exports = "mongodb:// .." in it.
+var uristring = require('./mongodb_uri');
 
 mongoose.connect(uristring);
 _db = mongoose.connection;
