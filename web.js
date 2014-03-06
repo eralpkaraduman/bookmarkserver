@@ -21,10 +21,7 @@ console.log('using encryptionKey : '+key);
 var url = require('url');
 
 // you need an mongolab account.
-var uristring =
-process.env.MONGOLAB_URI ||
-process.env.MONGOHQ_URL ||
-'mongodb://localhost/localmongo';
+var uristring = require('mongolab_uri.js');
 
 mongoose.connect(uristring);
 _db = mongoose.connection;
