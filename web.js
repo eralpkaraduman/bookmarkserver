@@ -1,4 +1,4 @@
-var http = require ('http'); 
+var http = require ('http');
 var UglifyJS = require("uglify-js");
 var mongoose = require('mongoose');
 var express = require('express');
@@ -81,11 +81,11 @@ app.get('/bookmarks/delete/:bookmarkID',function(req,res){
 		response.error = 'db not connected';
 		res.end(JSON.stringify(response,null, 4));
 	}
-	
+
 });
 
 app.get('/bookmarks',function(req,res){
-	
+
 	var fullURL = req.protocol + "://" + req.get('host');
 
 	res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8'});
@@ -95,26 +95,26 @@ app.get('/bookmarks',function(req,res){
 		if(_db.readyState){
 
 			Bookmark.find({}).exec(function(err,result){
-				
+
 					if(err){
 						response.result = false;
 						response.error = err+"";
 					}else{
 						response.result = true;
-						
+
 						response.bookmarks = [];
 
 						result.forEach(function(b) {
 
 						    var _b = {};
 						    var e = (b.encrypted == "true");
-						    
+
 
 
 						    _b = {
 						    	encrypted:e,
-						    	bookmarkURL:e?dec(b.title):b.title,
-						    	title:e?dec(b.bookmarkURL):b.bookmarkURL,
+						    	title:e?dec(b.title):b.title,
+						    	bookmarkURL:e?dec(b.bookmarkURL):b.bookmarkURL,
 						    	id:b._id,
 								deleteURL:fullURL+"/bookmarks/delete/"+b._id
 						    }
@@ -122,7 +122,7 @@ app.get('/bookmarks',function(req,res){
 						    response.bookmarks.push(_b);
 						});
 
-						
+
 					}
 					res.end(JSON.stringify(response,null, 4));
 			});
@@ -136,7 +136,7 @@ app.get('/bookmarks',function(req,res){
 })
 
 app.get('/bookmarklet',function(req,res){
-	
+
 	res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8'});
 
 	var fullURL = req.protocol + "://" + req.get('host');
@@ -154,8 +154,8 @@ app.get('/bookmarklet',function(req,res){
 				})();";
 
 	script = "javascript:"+UglifyJS.minify(script, {fromString: true}).code;
-	
-	
+
+
 	var html = "<html><body> \
 		<a href='"+script+"'>bookmark</a> \
 		<br /> \
@@ -169,12 +169,12 @@ app.get('/bookmarklet',function(req,res){
 
 function saveBookmark(bookmarkURL,title,callback){
 	// TURN ON/OFF ENCRYPTION FROM HERE
-	var e = true; 
+	var e = true;
 
 	if(validator.isURL(bookmarkURL)){
-		
 
-		if(_db.readyState){  	
+
+		if(_db.readyState){
 			var bookmark = new Bookmark({
 				encrypted:'true',
 				title:e?enc(title):title,
