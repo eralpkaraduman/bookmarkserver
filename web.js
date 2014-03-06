@@ -42,9 +42,7 @@ var bookmarkSchema = new mongoose.Schema({
 
 var Bookmark = mongoose.model('Bookmarks', bookmarkSchema);
 
-// The http server will listen to an appropriate port, or default to
-// port 5000.
-var port = process.env.PORT || 5000;
+
 
 app.post('/bookmarks/add',function(req,res){
 	res.header('Access-Control-Allow-Origin', '*')
@@ -206,4 +204,7 @@ function dec(str){
 	return decipher.update(str, 'hex', 'utf8') + decipher.final('utf8');
 }
 
+// The http server will listen to an appropriate port, or default to
+// port 5000.
+var port = process.env.PORT || 5000;
 app.listen(port);
